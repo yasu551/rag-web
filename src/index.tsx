@@ -7,6 +7,7 @@ import script from '../assets/script.js'
 type Bindings = {
   AI: any
   DB: D1Database
+  VECTORIZE_INDEX: VectorizeIndex
 }
 
 type Answer = {
@@ -100,13 +101,30 @@ app.get('/notes', async (c) => {
 
 app.post('/notes', async (c) => {
   const { text } = await c.req.parseBody()
-  if (text) {
-    const { results } = await c.env.DB.prepare("INSERT INTO notes (text) VALUES (?) RETURNING *").bind(text).run()
-    if (results.length > 0) {
-      return c.redirect('/notes')
-    }
+  if (!text) {
+    return c.redirect('/notes/new')
   }
-  return c.redirect('/notes/new')
+
+  const { results } = await c.env.DB.prepare("INSERT INTO notes (text) VALUES (?) RETURNING *").bind(text).run()
+  if ( results.length <= 0) {
+    return c.redirect('/notes/new')
+  }
+
+  const ai = new Ai(c.env.AI)
+  const { data } = await ai.run('@cf/baai/bge-base-en-v1.5', { text: [text] })
+  const values = data[0]
+  if (!values) {
+    return c.redirect('/notes/new')
+  }
+  const { id } = results[0]
+  const inserted = await c.env.VECTORIZE_INDEX.upsert([
+    {
+      id: id.toString(),
+      values,
+    }
+  ])
+  console.log(inserted)
+  return c.redirect('/notes')
 })
 
 app.get('/notes/new', (c) => {
