@@ -84,9 +84,11 @@ app.post('/ai', async (c) => {
   const vectors = embeddings.data[0]
 
   const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
-  const vecIds = vectorQuery.matches
-    .filter(vec => vec.score > Number(similarityCutoff))
-    .map(vec => vec.id)
+  const vecIds = vectorQuery.matches.map(vec => vec.id)
+  // const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
+  // const vecIds = vectorQuery.matches
+  //   .filter(vec => vec.score > Number(similarityCutoff))
+  //   .map(vec => vec.id)    
   let notes = []
   if (vecIds.length) {
     const query = `SELECT * FROM notes WHERE id IN (${vecIds.join(", ")})`
@@ -195,6 +197,12 @@ app.get('/notes/indices', async (c) => {
   return c.json({
     vectors: await c.env.VECTORIZE_INDEX.getByIds(ids)
   })
+})
+
+app.post('/embeddings', async (c) => {
+  const { text } = await c.req.parseBody()
+  const ai = new Ai(c.env.AI)
+  const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: text })  
 })
 
 export default app
