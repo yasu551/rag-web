@@ -63,7 +63,7 @@ app.get('/', (c) => {
         <h4>Context message</h4>
         <pre id="context"></pre>
         <h4>Message histories</h4>
-        <p id="messageHistories"></p>        
+        <ul id="messageHistories"></ul>        
       </details>
       <h2>AI</h2>
       <pre
@@ -118,7 +118,7 @@ app.post('/ai', async (c) => {
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
     vectorQuery: vectorQuery,
-    messages: messages.map(m => m.content).join("\n"),
+    messages: messages.map(m => m.content),
     answerMessage: answer.response,
   })
 })
