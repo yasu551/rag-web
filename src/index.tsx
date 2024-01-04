@@ -49,7 +49,7 @@ app.get('/', (c) => {
           name='similarityCutoff'
           min='0'
           value='0'
-          stpe='0.01'
+          step='0.01'
           style={{
             width: '100%'
           }}          
