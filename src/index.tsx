@@ -118,6 +118,7 @@ app.post('/ai', async (c) => {
   return c.json({
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
+    vectorQuery: vectorQuery,
     vecIds: vecIds.join(', '),
     messages: messages.map(m => m.content).join("\n"),
     answerMessage: answer.response,
