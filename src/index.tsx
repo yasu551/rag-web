@@ -43,9 +43,13 @@ app.get('/', (c) => {
         />
         <button type="submit">Send</button>
       </form>
+      <h3>System</h3>
+      <p id="system"></p>
+      <h3>Context</h3>
+      <p id="context"></p>
       <h2>AI</h2>
       <pre
-        id="ai-content"
+        id="answer"
         style={{
           'white-space': 'pre-wrap'
         }}
@@ -88,18 +92,24 @@ app.post('/ai', async (c) => {
   }
   const answer: Answer = await ai.run('@cf/meta/llama-2-7b-chat-int8', {
     messages: [
-      ...contextMessage,
       systemMessage,
+      ...contextMessage,
       ...messages,
     ]
   })
-  const strings = [...answer.response]
-  return streamText(c, async (stream) => {
-    for (const s of strings) {
-      stream.write(s)
-      await stream.sleep(10)
-    }
+  return c.json({
+    systemMessage: systemMessage.content,
+    contextMessage: contextContent,
+    messages: messages.map(m => m.content),
+    answerMessage: answer.response,
   })
+  // const strings = [...answer.response]
+  // return streamText(c, async (stream) => {
+  //   for (const s of strings) {
+  //     stream.write(s)
+  //     await stream.sleep(10)
+  //   }
+  // })
 })
 
 app.get('/notes', async (c) => {

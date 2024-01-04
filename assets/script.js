@@ -6,17 +6,31 @@ const messages = [
 ]
 
 document.addEventListener('DOMContentLoaded', function () {
-  const target = document.getElementById('ai-content')
+  const system = document.getElementById('system')
+  const context = document.getElementById('context')
+  const answer = document.getElementById('answer')
   document.getElementById('input-form').addEventListener('submit', function (event) {
     event.preventDefault()
-    target.innerHTML = 'loading...'
+    answer.innerHTML = 'loading...'
     const formData = new FormData(event.target)
     const query = formData.get('query')
     messages.push({
       role: 'user',
       content: query
     })
-    fetchChunked(target)
+    fetch('/ai', {
+      method: 'post',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ messages })
+    }).then((response) => {
+      response.json().then( data => {
+        system.innerHTML = data['systemMessage']
+        context.innerHTML = data['contextMessage']
+        answer.innerHTML = data['answerMessage']
+      })
+    })
   })
 })
 
