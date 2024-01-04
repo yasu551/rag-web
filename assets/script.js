@@ -8,7 +8,7 @@ const messages = [
 document.addEventListener('DOMContentLoaded', function () {
   const system = document.getElementById('system')
   const context = document.getElementById('context')
-  const messages = document.getElementById('messages')
+  const messageHistories = document.getElementById('messageHistories')
   const answer = document.getElementById('answer')
   document.getElementById('input-form').addEventListener('submit', function (event) {
     event.preventDefault()
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       response.json().then( data => {
         system.innerHTML = data['systemMessage']
         context.innerHTML = data['contextMessage']
-        messages.innerHTML = data['messages']
+        messageHistories.innerHTML = data['messageHistories']
         answer.innerHTML = data['answerMessage']
       })
     })

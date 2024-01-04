@@ -47,8 +47,8 @@ app.get('/', (c) => {
       <p id="system"></p>
       <h3>Context</h3>
       <p id="context"></p>
-      <h3>Messages</h3>
-      <p id="messages"></p>
+      <h3>Message histories</h3>
+      <p id="messageHistories"></p>
       <h2>AI</h2>
       <pre
         id="answer"
