@@ -68,7 +68,7 @@ app.post('/ai', async (c) => {
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
 
-  const SIMILARITY_CUTOFF = 0.75
+  const SIMILARITY_CUTOFF = 0.01
   const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
   const vecIds = vectorQuery.matches
     .filter(vec => vec.score > SIMILARITY_CUTOFF)
@@ -103,13 +103,6 @@ app.post('/ai', async (c) => {
     messages: messages.map(m => m.content),
     answerMessage: answer.response,
   })
-  // const strings = [...answer.response]
-  // return streamText(c, async (stream) => {
-  //   for (const s of strings) {
-  //     stream.write(s)
-  //     await stream.sleep(10)
-  //   }
-  // })
 })
 
 app.get('/notes', async (c) => {
