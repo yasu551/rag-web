@@ -65,7 +65,7 @@ app.get('/', (c) => {
 
 app.post('/ai', async (c) => {
   const { messages } = await c.req.json<{ messages: Message[] }>()
-  const question = messages.pop()
+  const question = messages.slice(-1)
   const ai = new Ai(c.env.AI)
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
