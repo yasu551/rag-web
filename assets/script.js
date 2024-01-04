@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     answer.innerHTML = 'loading...'
     const formData = new FormData(event.target)
     const query = formData.get('query')
+    const similarityCutoff = formData.get('similarityCutoff')
     messages.push({
       role: 'user',
       content: query
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ messages, similarityCutoff })
     }).then((response) => {
       response.json().then( data => {
         system.innerHTML = data['systemMessage']

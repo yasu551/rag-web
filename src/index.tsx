@@ -34,12 +34,24 @@ app.get('/', (c) => {
     <>
       <h2>You</h2>
       <form id="input-form" autocomplete="off" method="post" action="/ai">
+        <label>プロンプト</label>
         <input
           type="text"
           name="query"
           style={{
             width: '100%'
           }}
+        />
+        <br/>
+        <label>類似度の閾値</label>
+        <input
+          type='number'
+          name='similarityCutoff'
+          min='0'
+          value='0'
+          style={{
+            width: '100%'
+          }}          
         />
         <button type="submit">Send</button>
       </form>
@@ -64,16 +76,15 @@ app.get('/', (c) => {
 })
 
 app.post('/ai', async (c) => {
-  const { messages } = await c.req.json<{ messages: Message[] }>()
+  const { messages, similarityCutoff } = await c.req.json<{ messages: Message[], similarityCutoff: Number }>()
   const question = messages[messages.length - 1]
   const ai = new Ai(c.env.AI)
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
 
-  const SIMILARITY_CUTOFF = 0.01
   const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
   const vecIds = vectorQuery.matches
-    .filter(vec => vec.score > SIMILARITY_CUTOFF)
+    .filter(vec => vec.score > Number(similarityCutoff))
     .map(vec => vec.id)
   let notes = []
   if (vecIds.length) {
