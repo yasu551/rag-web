@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
           li.innerHTML = m
           messageHistories.appendChild(li)
         })
-        messageHistories.innerHTML = data['messages']
         answer.innerHTML = data['answerMessage']
       })
     })
