@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         details.hidden = false
         system.innerHTML = data['systemMessage']
         context.innerHTML = data['contextMessage']
+        messageHistories.innerHTML = ''
         data['messages'].map(m => {
           const li = document.createElement('li')
           li.innerHTML = m
