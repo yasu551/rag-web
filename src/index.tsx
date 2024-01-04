@@ -188,4 +188,12 @@ app.get('/notes/new', (c) => {
   )
 })
 
+app.get('/notes/indices', async (c) => {
+  const { results } = await c.env.DB.prepare("SELECT * FROM notes").all()
+  const ids: any[] = results.map(r => r['id'])
+  return c.json({
+    vectors: await c.env.VECTORIZE_INDEX.getByIds(ids)
+  })
+})
+
 export default app
