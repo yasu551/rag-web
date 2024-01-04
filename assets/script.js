@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       response.json().then( data => {
         system.innerHTML = data['systemMessage']
         context.innerHTML = data['contextMessage']
-        messageHistories.innerHTML = data['messageHistories']
+        messageHistories.innerHTML = data['messages']
         answer.innerHTML = data['answerMessage']
       })
     })
