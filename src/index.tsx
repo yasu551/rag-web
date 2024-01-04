@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { Ai } from '@cloudflare/ai'
 import { stream, streamText } from 'hono/streaming'
+import { renderer } from './renderer'
 
 type Bindings = {
   AI: any
@@ -17,8 +18,10 @@ type Message = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+app.get('*', renderer)
+
 app.get('/', (c) => {
-  return c.text('Hello Hono!')
+  return c.render(<h1>Hello AI!</h1>)
 })
 
 app.get('/ai', async (c) => {
