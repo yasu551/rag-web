@@ -3,6 +3,7 @@ const messages = []
 document.addEventListener('DOMContentLoaded', function () {
   const system = document.getElementById('system')
   const context = document.getElementById('context')
+  const vecIds = document.getElementById('vecIds')
   const messageHistories = document.getElementById('messageHistories')
   const answer = document.getElementById('answer')
   document.getElementById('input-form').addEventListener('submit', function (event) {
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(data)
         system.innerHTML = data['systemMessage']
         context.innerHTML = data['contextMessage']
+        vecIds.innerHTML = data['vecIds']
         messageHistories.innerHTML = data['messages']
         answer.innerHTML = data['answerMessage']
       })

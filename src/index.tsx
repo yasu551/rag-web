@@ -60,6 +60,8 @@ app.get('/', (c) => {
       <p id="system"></p>
       <h3>Context</h3>
       <p id="context"></p>
+      <h3>Vec ids</h3>
+      <p id="vecIds"></p>
       <h3>Message histories</h3>
       <p id="messageHistories"></p>
       <h2>AI</h2>
@@ -116,6 +118,7 @@ app.post('/ai', async (c) => {
   return c.json({
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
+    vecIds: vecIds.join(', '),
     messages: messages.map(m => m.content).join("\n"),
     answerMessage: answer.response,
   })
