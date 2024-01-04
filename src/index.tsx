@@ -86,11 +86,9 @@ app.post('/ai', async (c) => {
   const vectors = embeddings.data[0]
 
   const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
-  const vecIds = vectorQuery.matches.map(vec => vec.vectorId)
-  // const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
-  // const vecIds = vectorQuery.matches
-  //   .filter(vec => vec.score > Number(similarityCutoff))
-  //   .map(vec => vec.id)    
+  const vecIds = vectorQuery.matches
+    .filter(vec => vec.score > Number(similarityCutoff))
+    .map(vec => vec.vectorId)    
   let notes = []
   if (vecIds.length) {
     const query = `SELECT * FROM notes WHERE id IN (${vecIds.join(", ")})`
