@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
       body: JSON.stringify({ messages, similarityCutoff })
     }).then((response) => {
       response.json().then( data => {
+        console.log(data)
         system.innerHTML = data['systemMessage']
         context.innerHTML = data['contextMessage']
         messageHistories.innerHTML = data['messages']
