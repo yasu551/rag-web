@@ -56,14 +56,15 @@ app.get('/', (c) => {
         />
         <button type="submit">Send</button>
       </form>
-      <h3>System</h3>
-      <p id="system"></p>
-      <h3>Context</h3>
-      <p id="context"></p>
-      <h3>Vec ids</h3>
-      <p id="vecIds"></p>
-      <h3>Message histories</h3>
-      <p id="messageHistories"></p>
+      <details hidden id="details">
+        <summary>詳細</summary>
+        <h4>System message</h4>
+        <p id="system"></p>
+        <h4>Context message</h4>
+        <pre id="context"></pre>
+        <h4>Message histories</h4>
+        <p id="messageHistories"></p>        
+      </details>
       <h2>AI</h2>
       <pre
         id="answer"
@@ -117,7 +118,6 @@ app.post('/ai', async (c) => {
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
     vectorQuery: vectorQuery,
-    vecIds: vecIds.join(', '),
     messages: messages.map(m => m.content).join("\n"),
     answerMessage: answer.response,
   })
