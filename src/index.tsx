@@ -1,11 +1,12 @@
 import { Hono } from 'hono'
 import { Ai } from '@cloudflare/ai'
-import { stream, streamText } from 'hono/streaming'
+import { streamText } from 'hono/streaming'
 import { renderer } from './renderer'
 import script from '../assets/script.js'
 
 type Bindings = {
   AI: any
+  DB: D1Database
 }
 
 type Answer = {
@@ -65,6 +66,50 @@ app.post('/ai', async (c) => {
       await stream.sleep(10)
     }
   })
+})
+
+app.get('/notes', async (c) => {
+  const { results } = await c.env.DB.prepare("SELECT * FROM notes").all()
+  const items = results.map(result => <tr><td>{result['id']}</td><td>{result['text']}</td></tr>)
+  return c.render(
+    <>
+      <h2>ノート一覧</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Text</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items}
+        </tbody>
+      </table>
+    </>
+  )
+})
+
+app.post('/notes', async (c) => {
+  const { text } = await c.req.parseBody()
+  if (text) {
+    const { results } = await c.env.DB.prepare("INSERT INTO notes (text) VALUES (?) RETURNING *").bind(text).run()
+    if (results.length > 0) {
+      return c.redirect('/notes')
+    }
+  }
+  return c.redirect('/notes/new')
+})
+
+app.get('/notes/new', (c) => {
+  return c.render(
+    <>
+      <h2>ノート登録</h2>
+      <form action='/notes' method='POST'>
+        <textarea name="text" rows='10' style={{width: '100%'}}></textarea>
+        <button type="submit">登録する</button>
+      </form>
+    </>
+  )
 })
 
 export default app
