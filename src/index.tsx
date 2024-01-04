@@ -59,9 +59,39 @@ app.get('/', (c) => {
 
 app.post('/ai', async (c) => {
   const { messages } = await c.req.json<{ messages: Message[] }>()
+  const question = messages.pop()
   const ai = new Ai(c.env.AI)
+  const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
+  const vectors = embeddings.data[0]
+
+  const SIMILARITY_CUTOFF = 0.75
+  const vectorQuery = await c.env.VECTORIZE_INDEX.query(vectors, { topK: 1 });
+  const vecIds = vectorQuery.matches
+    .filter(vec => vec.score > SIMILARITY_CUTOFF)
+    .map(vec => vec.id)
+  let notes = []
+  if (vecIds.length) {
+    const query = `SELECT * FROM notes WHERE id IN (${vecIds.join(", ")})`
+    const { results } = await c.env.DB.prepare(query).bind().all()
+    if (results) notes = results.map(vec => vec.text)
+  }
+  const contextContent = notes.length
+    ? `Context:\n${notes.map(note => `- ${note}`).join("\n")}`
+    : ""
+  const contextMessage = notes.length
+    ? [{ role: 'system', content: contextContent }]
+    : []
+  
+  const systemMessage: Message = {
+    role: 'system',
+    content: `When answering the question or responding, use the context provided, if it is provided and relevant.`
+  }
   const answer: Answer = await ai.run('@cf/meta/llama-2-7b-chat-int8', {
-    messages
+    messages: [
+      ...contextMessage,
+      systemMessage,
+      ...messages,
+    ]
   })
   const strings = [...answer.response]
   return streamText(c, async (stream) => {
