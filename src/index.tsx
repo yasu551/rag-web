@@ -49,6 +49,9 @@ app.get('/', (c) => {
           'white-space': 'pre-wrap'
         }}
       ></pre>
+      <form action='/notes' method='get'>
+        <button type='submit'>ノート一覧へ</button>
+      </form>
     </>
   )
 })
@@ -85,6 +88,12 @@ app.get('/notes', async (c) => {
           {items}
         </tbody>
       </table>
+      <form action='/' method='get'>
+        <button type='submit'>ホームへ</button>
+      </form>
+      <form action='/notes/new' method='get'>
+        <button type='submit'>ノートを登録する</button>
+      </form>      
     </>
   )
 })
@@ -108,6 +117,9 @@ app.get('/notes/new', (c) => {
         <textarea name="text" rows='10' style={{width: '100%'}}></textarea>
         <button type="submit">登録する</button>
       </form>
+      <form action='/notes' method='get'>
+        <button type='submit'>ノート一覧へ</button>
+      </form>      
     </>
   )
 })
