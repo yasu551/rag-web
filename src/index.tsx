@@ -126,6 +126,7 @@ app.post('/ai', async (c) => {
     messages: messages.map(m => m.content),
     answerMessage: answer.response,
     response: response,
+    translated: JSON.stringify(response)
   })
 })
 
