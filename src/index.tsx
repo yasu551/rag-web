@@ -132,7 +132,7 @@ app.get('/notes', async (c) => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th style='width: 10%'>ID</th>
             <th>Text</th>
           </tr>
         </thead>
