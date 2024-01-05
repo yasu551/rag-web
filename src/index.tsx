@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { Ai } from '@cloudflare/ai'
-import { streamText } from 'hono/streaming'
+import { basicAuth } from 'hono/basic-auth'
 import { renderer } from './renderer'
 import script from '../assets/script.js'
 
@@ -8,6 +8,8 @@ type Bindings = {
   AI: any
   DB: D1Database
   VECTORIZE_INDEX: VectorizeIndex
+  BASIC_AUTH_USERNAME: string
+  BASIC_AUTH_PASSWORD: string
 }
 
 type Answer = {
@@ -20,6 +22,14 @@ type Message = {
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+app.use('*',async (c, next) => {
+  const auth = basicAuth({
+    username: c.env.BASIC_AUTH_USERNAME,
+    password: c.env.BASIC_AUTH_PASSWORD,
+  })
+  return auth(c, next)
+})
 
 app.get('*', renderer)
 
