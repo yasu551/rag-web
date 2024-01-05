@@ -125,7 +125,7 @@ app.post('/ai', async (c) => {
     vectorQuery: vectorQuery,
     messages: messages.map(m => m.content),
     answerMessage: answer.response,
-    // response: response,
+    response: response,
   })
 })
 
