@@ -124,7 +124,7 @@ app.post('/ai', async (c) => {
     contextMessage: contextContent,
     vectorQuery: vectorQuery,
     messages: messages.map(m => m.content),
-    answerMessage: response['translated_text'],
+    answerMessage: response,
     response: response,
   })
 })
