@@ -80,9 +80,14 @@ app.get('/', (c) => {
 })
 
 app.post('/ai', async (c) => {
+  const ai = new Ai(c.env.AI)
   const { messages, similarityCutoff } = await c.req.json<{ messages: Message[], similarityCutoff: Number }>()
   const question = messages[messages.length - 1]
-  const ai = new Ai(c.env.AI)
+  const response = await ai.run('@cf/meta/m2m100-1.2b', {
+    text: question.content,
+    source_lang: 'ja',
+    target_lang: 'en'
+  })
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
 
@@ -120,6 +125,7 @@ app.post('/ai', async (c) => {
     vectorQuery: vectorQuery,
     messages: messages.map(m => m.content),
     answerMessage: answer.response,
+    response: response,
   })
 })
 
