@@ -116,8 +116,8 @@ app.post('/ai', async (c) => {
   })
   const response = await ai.run('@cf/meta/m2m100-1.2b', {
     text: answer.response,
-    source_lang: 'japanese',
-    target_lang: 'english'
+    source_lang: 'en',
+    target_lang: 'ja'
   })  
   return c.json({
     systemMessage: systemMessage.content,
