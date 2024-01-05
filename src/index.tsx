@@ -114,18 +114,18 @@ app.post('/ai', async (c) => {
       ...messages,
     ]
   })
-  const response = await ai.run('@cf/meta/m2m100-1.2b', {
-    text: answer.response,
-    source_lang: 'english',
-    target_lang: 'japanese'
-  })  
+  // const response = await ai.run('@cf/meta/m2m100-1.2b', {
+  //   text: answer.response,
+  //   source_lang: 'english',
+  //   target_lang: 'japanese'
+  // })  
   return c.json({
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
     vectorQuery: vectorQuery,
     messages: messages.map(m => m.content),
-    answerMessage: response,
-    response: response,
+    answerMessage: answer.response,
+    // response: response,
   })
 })
 
