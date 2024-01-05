@@ -48,7 +48,7 @@ app.get('/', (c) => {
           type='number'
           name='similarityCutoff'
           min='0'
-          value='0'
+          value='0.75'
           step='0.01'
           style={{
             width: '100%'
