@@ -48,7 +48,7 @@ app.get('/', (c) => {
           type='number'
           name='similarityCutoff'
           min='0'
-          value='0'
+          value='0.5'
           step='0.01'
           style={{
             width: '100%'
@@ -83,11 +83,6 @@ app.post('/ai', async (c) => {
   const ai = new Ai(c.env.AI)
   const { messages, similarityCutoff } = await c.req.json<{ messages: Message[], similarityCutoff: Number }>()
   const question = messages[messages.length - 1]
-  const response = await ai.run('@cf/meta/m2m100-1.2b', {
-    text: question.content,
-    source_lang: 'japanese',
-    target_lang: 'english'
-  })
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
 
@@ -119,12 +114,17 @@ app.post('/ai', async (c) => {
       ...messages,
     ]
   })
+  const response = await ai.run('@cf/meta/m2m100-1.2b', {
+    text: answer.response,
+    source_lang: 'english',
+    target_lang: 'japanese'
+  })  
   return c.json({
     systemMessage: systemMessage.content,
     contextMessage: contextContent,
     vectorQuery: vectorQuery,
     messages: messages.map(m => m.content),
-    answerMessage: answer.response,
+    answerMessage: response.translated_text,
     response: response,
   })
 })
