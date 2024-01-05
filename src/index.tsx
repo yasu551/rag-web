@@ -85,8 +85,8 @@ app.post('/ai', async (c) => {
   const question = messages[messages.length - 1]
   const response = await ai.run('@cf/meta/m2m100-1.2b', {
     text: question.content,
-    source_lang: 'ja',
-    target_lang: 'en'
+    source_lang: 'japanese',
+    target_lang: 'english'
   })
   const embeddings = await ai.run('@cf/baai/bge-base-en-v1.5', { text: question.content })
   const vectors = embeddings.data[0]
